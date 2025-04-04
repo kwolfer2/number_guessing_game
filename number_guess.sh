@@ -21,9 +21,6 @@ else
   BEST_GAME=$($PSQL "SELECT best_guess FROM users WHERE username='$USERNAME'")
   GAMES_PLAYED=$(echo $GAMES_PLAYED | xargs)
   BEST_GAME=$(echo $BEST_GAME | xargs)
-  if [[ -z $BEST_GAME ]]; then
-    BEST_GAME=0
-  fi
   echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
@@ -41,14 +38,14 @@ if ! [[ $CURRENT_GUESS =~ ^[0-9]+$ ]]
 elif [[ $CURRENT_GUESS -eq $SECRET_NUMBER ]]
 then 
   NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
-  echo "You guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
   GAMES_PLAYED=$((GAMES_PLAYED + 1))
   $PSQL "UPDATE users SET games_played = $GAMES_PLAYED WHERE username = '$USERNAME'"
   if [[ -z $BEST_GAME || $BEST_GAME -gt $NUMBER_OF_GUESSES ]]
   then 
     $PSQL "UPDATE users SET best_guess = $NUMBER_OF_GUESSES WHERE username = '$USERNAME'"
   fi
-  exit
+  echo "You guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
+  exit 0
 elif [[ $CURRENT_GUESS -gt $SECRET_NUMBER ]]
 then
 NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
