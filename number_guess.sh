@@ -36,7 +36,7 @@ read CURRENT_GUESS
 NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
 
 if ! [[ $CURRENT_GUESS =~ ^[0-9]+$ ]]
-  then GUESS_MENU "That is not an integer, guess again:"
+then GUESS_MENU "That is not an integer, guess again:"
 elif [[ $CURRENT_GUESS -eq $SECRET_NUMBER ]]
 then 
 # User guesses correctly
@@ -50,12 +50,10 @@ then
 elif [[ $CURRENT_GUESS -gt $SECRET_NUMBER ]]
 then
 # User guesses a number too high
-NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
 GUESS_MENU "It's lower than that, guess again:"
 elif [[ $CURRENT_GUESS -lt $SECRET_NUMBER ]]
 then
 # User guesses a number too low
-NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
 GUESS_MENU "It's higher than that, guess again:"
 fi
 }
