@@ -2,8 +2,6 @@
 
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
-NUMBER_OF_GUESSES=0
-SECRET_NUMBER=$(( RANDOM % 1000 + 1))
 echo "Enter your username:"
 read INPUT_USERNAME
 
@@ -24,21 +22,23 @@ else
   echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
+GAMES_PLAYED=$((GAMES_PLAYED + 1))
+NUMBER_OF_GUESSES=0
+SECRET_NUMBER=$(( RANDOM % 1000 + 1))
+
 GUESS_MENU() {
 if [[ ! -z $1 ]]
 then
 echo "$1"
 fi
 
-echo "Guess the secret number between 1 and 1000:"
 read CURRENT_GUESS
+NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
 
 if ! [[ $CURRENT_GUESS =~ ^[0-9]+$ ]]
   then GUESS_MENU "That is not an integer, guess again:"
 elif [[ $CURRENT_GUESS -eq $SECRET_NUMBER ]]
 then 
-  NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
-  GAMES_PLAYED=$((GAMES_PLAYED + 1))
   $PSQL "UPDATE users SET games_played = $GAMES_PLAYED WHERE username = '$USERNAME'"
   if [[ -z $BEST_GAME || $BEST_GAME -gt $NUMBER_OF_GUESSES ]]
   then 
@@ -56,4 +56,5 @@ NUMBER_OF_GUESSES=$((NUMBER_OF_GUESSES + 1))
 GUESS_MENU "It's higher than that, guess again:"
 fi
 }
+echo "Guess the secret number between 1 and 1000:"
 GUESS_MENU ""
